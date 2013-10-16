@@ -1,4 +1,4 @@
-package fr.cneftali.spring.batch.master.items;
+package fr.cneftali.spring.batch.common.items;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.springframework.batch.item.ItemWriter;
 
 import fr.cneftali.spring.batch.common.entities.Request;
 
-public class MasterItemWriter implements ItemWriter<Request> {
+public class TestItemWriter implements ItemWriter<Request> {
 
-	private static final Logger logger = LoggerFactory.getLogger(MasterItemWriter.class);
+	private static final Logger logger = LoggerFactory.getLogger(TestItemWriter.class);
 
 	/**
 	 * Counts the number of chunks processed in the handler.

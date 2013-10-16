@@ -21,8 +21,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import fr.cneftali.spring.batch.common.conf.CommonBatchInfrastructure;
 import fr.cneftali.spring.batch.common.entities.Request;
+import fr.cneftali.spring.batch.common.items.TestItemWriter;
 import fr.cneftali.spring.batch.master.items.MasterItemReader;
-import fr.cneftali.spring.batch.master.items.MasterItemWriter;
 
 @Configuration
 @Import({ CommonBatchInfrastructure.class })
@@ -93,8 +93,8 @@ public class MasterBatchConfiguration {
 	
 	@Bean
 	@StepScope
-	public MasterItemWriter writer() {
-		final MasterItemWriter writer = new MasterItemWriter();
+	public TestItemWriter writer() {
+		final TestItemWriter writer = new TestItemWriter();
 		return writer;
 	}
 }

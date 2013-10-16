@@ -17,7 +17,7 @@
 		<springframework.version>3.2.4.RELEASE</springframework.version>
 		<springframework.batch.version>2.2.1.RELEASE</springframework.batch.version>
 		<springframework.batch.integration.version>1.2.2.RELEASE</springframework.batch.integration.version>
-		<springframework.integration.version>2.2.1.RELEASE</springframework.integration.version>
+		<springframework.integration.version>2.2.6.RELEASE</springframework.integration.version>
 		<cglib.version>3.0</cglib.version>
 	</properties>
 
@@ -88,7 +88,7 @@
 			<dependency>
 				<groupId>org.springframework.integration</groupId>
 				<artifactId>spring-integration-jms</artifactId>
-				<version>2.2.5.RELEASE</version>
+				<version>${springframework.integration.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.springframework.batch</groupId>
