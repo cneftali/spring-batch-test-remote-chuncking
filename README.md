@@ -1,5 +1,14 @@
 spring-batch-test-remote-chuncking
 ==================================
 
-1 - checkout the project
-2 - Launch the class RemoteChunckingIntegrationTest in the project remote-chuncking-test
+# Techno :
+
+  - JAVA 1.7
+  - ActiveMQ 5.7
+  - SpringBatch 2.2
+  - Spring Integration 2.2.6
+
+# How to test:
+
+  - checkout the project
+  - Launch the class RemoteChunckingIntegrationTest in the project remote-chuncking-test
