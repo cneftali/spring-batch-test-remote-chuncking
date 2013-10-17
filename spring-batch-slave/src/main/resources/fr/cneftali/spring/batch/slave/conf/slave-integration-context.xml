@@ -14,22 +14,13 @@
 			http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.2.xsd
 			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 
-	<int-jms:inbound-channel-adapter 
-		id="jmsRequests"
-		connection-factory="connectionFactory"
-		destination-name="requests"
-		channel="requests">
+	<int-jms:inbound-channel-adapter id="jmsRequests" connection-factory="connectionFactory" destination-name="requests" channel="requests">
 		<integration:poller fixed-delay="500" />
 	</int-jms:inbound-channel-adapter>
 
 	<integration:channel id="requests" />
 
-	<integration:service-activator
-		id="srvActivator"
-		input-channel="requests"
-		output-channel="replies"
-		ref="chunkHandler"
-		method="handleChunk" />
+	<integration:service-activator id="srvActivator" input-channel="requests" output-channel="replies" ref="chunkHandler" method="handleChunk" />
 
 	<integration:channel id="replies">
 		<integration:interceptors>
@@ -37,15 +28,6 @@
 		</integration:interceptors>
 	</integration:channel>
 
-	<int-jms:outbound-channel-adapter 
-		id="outgoingReplies"
-		connection-factory="connectionFactory"
-		destination-name="replies"
-		channel="replies" />
-
-
-	<integration:logging-channel-adapter
-		id="loggingChannel"
-		level="INFO"
-		log-full-message="true" />
+	<int-jms:outbound-channel-adapter id="outgoingReplies" connection-factory="connectionFactory" destination-name="replies" channel="replies" />
+	<integration:logging-channel-adapter id="loggingChannel" level="INFO" log-full-message="true" />
 </beans>

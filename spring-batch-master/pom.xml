@@ -15,7 +15,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.activemq</groupId>
-			<artifactId>activemq-core</artifactId>
+			<artifactId>activemq-pool</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>spring-batch-test-remote-chuncking</groupId>

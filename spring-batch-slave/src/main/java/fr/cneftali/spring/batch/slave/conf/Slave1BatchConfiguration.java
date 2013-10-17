@@ -1,25 +1,40 @@
 package fr.cneftali.spring.batch.slave.conf;
 
-import java.util.UUID;
-
 import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.pool.PooledConnectionFactory;
 import org.springframework.batch.core.step.item.SimpleChunkProcessor;
 import org.springframework.batch.integration.chunk.ChunkProcessorChunkHandler;
 import org.springframework.batch.item.support.PassThroughItemProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.jms.connection.CachingConnectionFactory;
 
 import fr.cneftali.spring.batch.common.entities.Request;
 import fr.cneftali.spring.batch.common.items.TestItemWriter;
 
 @Configuration
 @ImportResource({ "classpath:fr/cneftali/spring/batch/slave/conf/slave-integration-context.xml" })
-public class SlaveBatchConfiguration {
+public class Slave1BatchConfiguration {
 
 	@Bean
-	public ActiveMQConnectionFactory connectionFactory() {		
+	public ActiveMQConnectionFactory amqConnectionFactory() {		
 		return new ActiveMQConnectionFactory("tcp://localhost:61616");
+	}
+	
+	@Bean
+	public PooledConnectionFactory amqPoolConnectionFactory() {
+		return new PooledConnectionFactory(amqConnectionFactory());
+	}
+	
+	// A cached connection to wrap the ActiveMQ connection
+	@Bean
+	public CachingConnectionFactory connectionFactory() {
+		 final CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(amqPoolConnectionFactory());
+		 cachingConnectionFactory.setSessionCacheSize(100);
+		 cachingConnectionFactory.setCacheProducers(true);
+		 cachingConnectionFactory.setCacheConsumers(true);
+		 return cachingConnectionFactory;
 	}
 
 	@Bean
@@ -38,7 +53,7 @@ public class SlaveBatchConfiguration {
 	@Bean
 	public TestItemWriter writer() {
 		final TestItemWriter writer = new TestItemWriter();
-		writer.setWriterName("remote-slave-" +  UUID.randomUUID() + "-writer");
+		writer.setWriterName("remote-slave-1-writer");
 		return writer;
 	}
 }

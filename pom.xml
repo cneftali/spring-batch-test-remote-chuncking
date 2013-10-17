@@ -46,7 +46,7 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.activemq</groupId>
-				<artifactId>activemq-core</artifactId>
+				<artifactId>activemq-pool</artifactId>
 				<version>5.7.0</version>
 				<exclusions>
 					<exclusion>

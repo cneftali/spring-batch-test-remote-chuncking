@@ -14,40 +14,21 @@
 			http://www.springframework.org/schema/integration/jms http://www.springframework.org/schema/integration/jms/spring-integration-jms-2.2.xsd
 			http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
 			
-	<bean id="connectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-		<property name="brokerURL">
-			<value>tcp://localhost:61616</value>
-		</property>
-	</bean>
+	<task:executor id="poolExecutor" pool-size="5-10" queue-capacity="0" />
 
 	<!-- Remote Chunking Requests (The Producing of Chunks) Integration Configuration -->
-
+	<integration:channel id="requests" />
+	<int-jms:outbound-channel-adapter id="jmsRequests" connection-factory="connectionFactory" destination-name="requests"  />
 	<bean id="messagingGateway" class="org.springframework.integration.core.MessagingTemplate">
 		<property name="defaultChannel" ref="jmsRequests" />
 		<property name="receiveTimeout" value="5000" />
 	</bean>
-
-
-	<integration:channel id="requests" />
-
-	<int-jms:outbound-channel-adapter 
-		connection-factory="connectionFactory" 
-		destination-name="requests" 
-		id="jmsRequests">
-
-	</int-jms:outbound-channel-adapter>
+	
 
 	<!-- Remote Chunking Replies From Slave -->
-
-	<int-jms:inbound-channel-adapter 
-		id="jmsReplies"
-		connection-factory="connectionFactory"
-		destination-name="replies"
-		channel="replies">
+	<int-jms:inbound-channel-adapter id="jmsReplies" connection-factory="connectionFactory" destination-name="replies" channel="replies">
 		<integration:poller fixed-delay="200"/>
 	</int-jms:inbound-channel-adapter>
-
-
 	<integration:channel id="replies">
 		<integration:queue />
 		<integration:interceptors>
@@ -55,10 +36,6 @@
 		</integration:interceptors>
 	</integration:channel>
 
-
 	<integration:logging-channel-adapter id="loggingChannel" level="INFO" log-full-message="true" />
-
-	<task:executor id="poolExecutor" pool-size="5-10" queue-capacity="0" />
-	
 	<integration:service-activator  input-channel="requests" output-channel="replies" ref="chunkHandler" />
 </beans>

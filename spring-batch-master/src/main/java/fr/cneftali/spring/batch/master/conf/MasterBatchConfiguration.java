@@ -2,6 +2,8 @@ package fr.cneftali.spring.batch.master.conf;
 
 import static fr.cneftali.spring.batch.common.conf.CommonBatchInfrastructure.NOOP_TRANSACTION_MANAGER;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.pool.PooledConnectionFactory;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.integration.core.MessagingTemplate;
 import org.springframework.integration.core.PollableChannel;
+import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import fr.cneftali.spring.batch.common.conf.CommonBatchInfrastructure;
@@ -46,6 +49,26 @@ public class MasterBatchConfiguration {
 	private PollableChannel replies;
 	
 	@Bean
+	public ActiveMQConnectionFactory amqConnectionFactory() {		
+		return new ActiveMQConnectionFactory("tcp://localhost:61616");
+	}
+	
+	@Bean
+	public PooledConnectionFactory amqPoolConnectionFactory() {
+		return new PooledConnectionFactory(amqConnectionFactory());
+	}
+	
+	// A cached connection to wrap the ActiveMQ connection
+	@Bean
+	public CachingConnectionFactory connectionFactory() {
+		 final CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(amqPoolConnectionFactory());
+		 cachingConnectionFactory.setSessionCacheSize(100);
+		 cachingConnectionFactory.setCacheProducers(true);
+		 cachingConnectionFactory.setCacheConsumers(true);
+		 return cachingConnectionFactory;
+	}
+	
+	@Bean
 	@StepScope
 	public ChunkMessageChannelItemWriter<Request> chunkWriter() {
 		final ChunkMessageChannelItemWriter<Request> writer = new ChunkMessageChannelItemWriter<>();
@@ -53,7 +76,6 @@ public class MasterBatchConfiguration {
 		writer.setThrottleLimit(5);
 		writer.setMaxWaitTimeouts(30000);
 		writer.setReplyChannel(replies);
-
 		return writer;
 	}
 	
@@ -71,7 +93,7 @@ public class MasterBatchConfiguration {
 		return stepBuilders
 				.get("step1")
 				.transactionManager(noopTransactionManager)
-				.<Request, Request>chunk(5)
+				.<Request, Request>chunk(2)
 				.reader(reader())
 				.writer(writer())
 				.build();
@@ -92,9 +114,9 @@ public class MasterBatchConfiguration {
 	}
 	
 	@Bean
-	@StepScope
 	public TestItemWriter writer() {
 		final TestItemWriter writer = new TestItemWriter();
+		writer.setWriterName("master-writer");
 		return writer;
 	}
 }
