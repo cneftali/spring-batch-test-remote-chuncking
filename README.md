@@ -1,5 +1,5 @@
-spring-batch-test-remote-chuncking
-==================================
+Spring Batch Remote Chuncking Sample
+====================================
 
 # Techno :
 
