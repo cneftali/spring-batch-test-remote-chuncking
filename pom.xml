@@ -25,6 +25,7 @@
 		<module>spring-batch-common</module>
 		<module>spring-batch-master</module>
 		<module>spring-batch-slave</module>
+        <module>remote-chuncking-test</module>
 	</modules>
 
 	<dependencyManagement>
